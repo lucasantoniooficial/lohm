@@ -15,5 +15,13 @@
             "Aposoftworks\\LOHM":"src/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Aposoftworks\\LOHM\\Providers\\LohmServiceProvider",
+                "Aposoftworks\\LOHM\\Providers\\LohmCommandServiceProvider"
+            ]
+        }
+    },
     "require": {}
 }

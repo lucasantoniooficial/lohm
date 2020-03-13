@@ -44,3 +44,11 @@ If you would like to change any configuration regarded to the package, you can p
 php artisan vendor:publish --tag=lohm-config
 ```
 You can see that everything is pretty much configurable, file/directory names, cache options, so you can keep it to your taste.
+
+## General thoughts
+### Versionify vs unify
+LOHM helps you keep your tables versionized, meaning that he will keep a version of every table inside your migrations. But in case you don't want this resource, you may disable it using `--unify`, it will convert the table into a PHP file instead of a directory containing it's versions.
+
+## TODO
+[] Add support for indexes
+[] Add support for foreign keys
