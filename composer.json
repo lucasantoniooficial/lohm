@@ -1,0 +1,19 @@
+{
+    "name": "aposoftworks/lohm",
+    "description": "Another approach to handle migrations inside laravel that helps you keep versionized and organized migrations.",
+    "type": "library",
+    "license": "BSD-3",
+    "authors": [
+        {
+            "name": "Rafael",
+            "email": "rafael.chaves98@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Aposoftworks\\LOHM":"src/"
+        }
+    },
+    "require": {}
+}
