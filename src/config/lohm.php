@@ -54,5 +54,24 @@ return [
     |
     */
 
-    "virtualdb_class" => \Aposoftwork\LOHM\Classes\Virtual\VirtualDatabase::class,
+    "virtualdb_class" => \Aposoftworks\LOHM\Classes\Virtual\VirtualDatabase::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Migration table name
+    |--------------------------------------------------------------------------
+    |
+    | If you would like to add some other info to the name, you can add it here.
+    | Version will only be added if the table_type config is set to versionify.
+    | Uppername is the name after being sanitized by
+    |
+    | timestamp     : {timestamp}
+    | name          : {name}
+    | studlyname    : {studly}
+    | camelname     : {camel}
+    | version       : {version}
+    |
+    */
+
+    "default_table_namestructure" => "Model{studly}{version}"
 ];

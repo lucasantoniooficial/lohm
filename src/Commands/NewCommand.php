@@ -8,9 +8,6 @@ use Illuminate\Console\Command;
 //Classes
 use Aposoftworks\LOHM\Classes\CreateNewTable;
 use Aposoftworks\LOHM\Classes\CreateNewVersion;
-use Aposoftworks\LOHM\Classes\Virtual\VirtualColumn;
-use Aposoftworks\LOHM\Classes\Virtual\VirtualDatabase;
-use Aposoftworks\LOHM\Classes\Virtual\VirtualTable;
 
 class NewCommand extends Command {
     /**
@@ -45,15 +42,18 @@ class NewCommand extends Command {
     public function handle() {
         $type = $this->argument("type");
 
-        //dd(VirtualDatabase::fromDatabase($type));
-        dd(VirtualDatabase::fromDatabase($type)->toQuery());
-
         switch ($type) {
             case "table":
-                CreateNewTable::create($this->arguments(), $this->options());
+                if (CreateNewTable::create($this->arguments(), $this->options())) {
+                    $this->info("Table created successfully");
+                }
+                else {
+                    $this->warn("Table already exists for this version");
+                }
             break;
             case "version":
                 CreateNewVersion::create($this->arguments(), $this->options());
+                $this->info("Version created successfully");
             break;
         }
     }

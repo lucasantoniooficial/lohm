@@ -13,14 +13,14 @@ We require all the providers and facades automatically, so you don't need to wor
 
 ## Usage
 
-### New model
-Just an advice, don't use Laravel vanilla migrations altogether with ours, this may cause some problems. But the first thing you should do is define a model migration:
+### New table
+Just an advice, don't use Laravel vanilla migrations altogether with ours, this may cause some problems. But the first thing you should do is define a table migration:
 
 ``` bash
-php artisan lohm:new model Core\User
+php artisan lohm:new table Core\User
 ```
 
-The `lohm:new` parameter takes two parameters, what to create and the name/path to it. In case we will create a new migration that is localized inside the Core folder and has the name of the user. As you will see (if you did not change the config of the package. Is that the model is actually a folder, called m-User. And inside is a PHP file called `0-1-0.php`. We don't save timestamps by default, but you can change that in the config.
+The `lohm:new` parameter takes two parameters, what to create and the name/path to it. In case we will create a new migration that is localized inside the Core folder and has the name of the user. As you will see (if you did not change the config of the package. Is that the table is actually a folder, called m-User. And inside is a PHP file called `0-1-0.php`. We don't save timestamps by default, but you can change that in the config.
 Inside of the PHP file, you will find that it is pretty similar to the Laravel migration syntax, you can work as expected here.
 
 ### New version
@@ -30,7 +30,7 @@ Differently from Laravel, we keep a current version cache inside of the applicat
 php artisan lohm:new version 0.1.1
 ```
 
-When you run this command, a new file with the desired version will be added to every model inside of your migrations, and the contents of the last version will be added as a base to the new version.
+When you run this command, a new file with the desired version will be added to every table inside of your migrations, and the contents of the last version will be added as a base to the new version.
 
 ### Running migrations
 If you want to run the migrations, simply run `lohm:migrate`, this will get the latest version of your migrations and run them. Since we keep in cache what is currently in the database, we compare the missing fields and make the changes accordingly. But beware that some operations can break the database, such as removing fields that are required for foreign keys, or adding values to foreign keys that don't match.
