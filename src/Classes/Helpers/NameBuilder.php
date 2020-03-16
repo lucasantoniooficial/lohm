@@ -1,6 +1,6 @@
 <?php
 
-namespace Aposoftworks\LOHM\Classes;
+namespace Aposoftworks\LOHM\Classes\Helpers;
 
 //Helpers
 use Carbon\Carbon;
@@ -40,6 +40,14 @@ class NameBuilder {
         }
 
         return $format;
+    }
+
+    public static function isMigration ($name) {
+        $format         = config("lohm.default_table_namestructure");
+        $cleanformat    = preg_replace("/{\w+}/", "\w+", $format);
+
+        return preg_match("/".$cleanformat."/", $name);
+
     }
 
     public static function formatversion () {

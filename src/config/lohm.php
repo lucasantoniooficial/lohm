@@ -27,7 +27,7 @@ return [
     |
     */
 
-    "table_type" => "versionify",
+    "table_type" => "unify",
 
     /*
     |--------------------------------------------------------------------------
@@ -73,5 +73,20 @@ return [
     |
     */
 
-    "default_table_namestructure" => "Model{studly}{version}"
+    "default_table_namestructure" => "Model_{studly}_{version}",
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default database values
+    |--------------------------------------------------------------------------
+    |
+    |
+    |
+    */
+
+    "default_database" => [
+        "string_size"   => 199,
+        "integer_size"  => 255,
+        "binary_size"   => 255,
+    ]
 ];

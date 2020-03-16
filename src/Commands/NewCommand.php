@@ -9,6 +9,8 @@ use Illuminate\Console\Command;
 use Aposoftworks\LOHM\Classes\CreateNewTable;
 use Aposoftworks\LOHM\Classes\CreateNewVersion;
 
+use Aposoftworks\LOHM\Classes\Concrete\ConcreteTable;
+
 class NewCommand extends Command {
     /**
      * The name and signature of the console command.
@@ -41,6 +43,15 @@ class NewCommand extends Command {
      */
     public function handle() {
         $type = $this->argument("type");
+
+        $table = new ConcreteTable("test", [], "test");
+        $table->string("test_string")->default("testdefault");
+        $table->text("test_text");
+        $table->integer("test_integer");
+        $table->boolean("test_boolean");
+        $table->timestamps();
+
+        dd($table->toQuery());
 
         switch ($type) {
             case "table":

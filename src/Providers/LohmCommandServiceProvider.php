@@ -20,7 +20,7 @@ class LohmCommandServiceProvider extends ServiceProvider {
         if ($this->app->runningInConsole()) {
             $this->commands([
                 NewCommand::class,
-                //MigrateCommand::class,
+                MigrateCommand::class,
                 //RecacheCommand::class,
                 //DecacheCommand::class,
             ]);

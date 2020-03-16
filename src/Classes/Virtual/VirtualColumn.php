@@ -42,22 +42,11 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
     protected $attributes;
 
     //-------------------------------------------------
-    // Default methods
+    // Static methods
     //-------------------------------------------------
 
-    public function __construct ($columnname, $attributes = [], $databasename = "", $tablename = "") {
-        $this->databasename = $databasename;
-        $this->tablename    = $tablename;
-        $this->columnname   = $columnname;
-        $this->attributes   = $attributes;
-    }
-
-    public function isValid () {
-        return !is_null($this->attributes);
-    }
-
-    public function key () {
-        switch ($this->attributes->Key) {
+    public static function key ($key) {
+        switch ($key) {
             case "PRI":
                 return "PRIMARY KEY";
             case "UNI":
@@ -65,6 +54,37 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
             default:
                 return "";
         }
+    }
+
+    public static function extra ($extra) {
+        switch ($extra) {
+            case  "auto_increment":
+                return "AUTO_INCREMENT";
+            default:
+                return "";
+        }
+    }
+
+    //-------------------------------------------------
+    // Default methods
+    //-------------------------------------------------
+
+    public function __construct ($columnname, $attributes = [], $databasename = "", $tablename = "") {
+        $this->databasename = $databasename;
+        $this->tablename    = $tablename;
+        $this->columnname   = $columnname;
+        $this->attributes   = (object)$attributes;
+    }
+
+    public function isValid () {
+        return !is_null($this->attributes);
+    }
+
+    public function buildType () {
+        if (isset($this->attributes->length))
+            return $this->attributes->type."(".$this->attributes->length.")";
+        else
+            return $this->attributes->type;
     }
 
     //-------------------------------------------------
@@ -80,7 +100,27 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
         //Unset the name since we already got that in a specific property
         unset($column->Field);
 
-        return new VirtualColumn($columnname, $column, $databasename, $tablename);
+        //Sort attributes
+        $_preattributes     = [];
+
+        //Type and size
+        $splittype              = explode("(", $column->Type);
+        $_preattributes["type"] = $splittype[0];
+        if (count($splittype) > 1) $_preattributes["length"] = preg_replace("/(\(|\))/", "", $splittype[1]);
+
+        //Default value
+        $_preattributes["default"] = $column->Default;
+
+        //Key
+        $_preattributes["key"] = VirtualColumn::key($column->Key);
+
+        //Nullable
+        $_preattributes["nullable"] = $column->Null === "NO" ? "NOT NULL":"NULL";
+
+        //Extra
+        $_preattributes["extra"] = VirtualColumn::extra($column->Extra);
+
+        return new VirtualColumn($columnname, $_preattributes, $databasename, $tablename);
     }
 
     //-------------------------------------------------
@@ -94,11 +134,11 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
     public function toQuery () {
         //Configuration
         $name       = $this->columnname;
-        $increment  = $this->attributes->Extra === "auto_increment" ? "AUTO_INCREMENT":"";
-        $type       = $this->attributes->Type;
-        $nullable   = $this->attributes->Null === "NO" ? "NOT NULL":"";
-        $primary    = $this->key();
-        $default    = is_null($this->attributes->Default) ? "":"DEFAULT '".$this->attributes->Default."'";
+        $type       = $this->buildType();
+        $increment  = isset($this->attributes->extra)? $this->attributes->extra:"";
+        $nullable   = isset($this->attributes->nullable)? $this->attributes->nullable:"NOT NULL";
+        $primary    = isset($this->attributes->key)? $this->attributes->key:"";
+        $default    = isset($this->attributes->default)? ("DEFAULT '".$this->attributes->default."'"):"";
 
         //Sanitization
         $raw = implode(" ", [$name, $type, $increment, $nullable, $default, $primary]);

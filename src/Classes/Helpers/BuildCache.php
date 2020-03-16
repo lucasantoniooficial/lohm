@@ -1,6 +1,6 @@
 <?php
 
-namespace Aposoftworks\LOHM\Classes;
+namespace Aposoftworks\LOHM\Classes\Helpers;
 
 //Facades
 use Illuminate\Support\Facades\Cache;

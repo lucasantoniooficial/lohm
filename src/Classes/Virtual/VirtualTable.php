@@ -108,7 +108,7 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
         }
 
         //Prepare general statement
-        $raw  = "CREATE TABLE ".$this->tablename."( ";
+        $raw  = "CREATE TABLE ".$this->tablename." ( ";
         $raw .= implode(", ", $queryColumns);
         $raw .= " );";
 

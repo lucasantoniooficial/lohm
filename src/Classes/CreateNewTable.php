@@ -5,6 +5,10 @@ namespace Aposoftworks\LOHM\Classes;
 //Interfaces
 use Aposoftworks\LOHM\Contracts\FromCreateCommand;
 
+//Helpers
+use Aposoftworks\LOHM\Classes\Helpers\NameBuilder;
+use Aposoftworks\LOHM\Classes\Helpers\StubBuilder;
+
 class CreateNewTable implements FromCreateCommand {
     public static function create ($arguments = [], $options = []) {
         $asdir      = config("lohm.table_type") === "versionify";
@@ -14,7 +18,7 @@ class CreateNewTable implements FromCreateCommand {
         $filename   = NameBuilder::build($name);
 
         //Create stub
-        $stub = new StubHelper(file_get_contents(__DIR__."/../Stubs/table.stub.php"), [
+        $stub = StubBuilder::build(file_get_contents(__DIR__."/../Stubs/table.stub.php"), [
             "classname" => $filename,
             "tablename" => $name,
         ]);
@@ -36,7 +40,7 @@ class CreateNewTable implements FromCreateCommand {
                 return false;
             }
             else {
-                file_put_contents($path."/".$name."/".$filename.".php", $stub->parse());
+                file_put_contents($path."/".$name."/".$filename.".php", $stub);
             }
         }
         else {
@@ -44,7 +48,7 @@ class CreateNewTable implements FromCreateCommand {
                 return false;
             }
             else {
-                file_put_contents($path.$filename.".php", $stub->parse());
+                file_put_contents($path.$filename.".php", $stub);
             }
         }
 

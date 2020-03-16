@@ -17,5 +17,9 @@ class LohmServiceProvider extends ServiceProvider {
         $this->publishes([
             __DIR__."/../config/lohm.php" => config_path("lohm")
         ]);
+
+        $this->publishes([
+            __DIR__."/../config/lohm.php" => config_path("lohm")
+        ], "config");
     }
 }
