@@ -2,7 +2,7 @@
     "name": "aposoftworks/lohm",
     "description": "Another approach to handle migrations inside laravel that helps you keep versionized and organized migrations.",
     "type": "library",
-    "license": "BSD-3",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Rafael",
