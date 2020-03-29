@@ -12,7 +12,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "Aposoftworks\\LOHM":"src/"
+            "Aposoftworks\\LOHM\\":"src/"
         }
     },
     "extra": {
