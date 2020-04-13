@@ -24,12 +24,8 @@ class LohmServiceProvider extends ServiceProvider {
     public function boot () {
         //Publishing
         $this->publishes([
-            __DIR__."/../config/lohm.php" => config_path("lohm")
-        ]);
-
-        $this->publishes([
-            __DIR__."/../config/lohm.php" => config_path("lohm")
-        ], "config");
+            __DIR__."/../config/lohm.php" => config_path("lohm.php")
+        ], "lohm-config");
 
         //Commands
         if ($this->app->runningInConsole()) {
