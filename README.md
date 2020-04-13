@@ -44,23 +44,35 @@ You can see that everything is pretty much configurable, file/directory names, c
 ## Commands
 
 - make:table
+
 Creates a table migration
 - migrate:sync
+
 Will compare the migrations with the database and apply the differences
 - analyze {database?} {table?} {column?}
+
 Will analyze the migrations data
 - analyze:current {database?} {table?} {column?}
+
 Will analyze the current database
 - analyze:diff {database?} {table?}
+
 (NYI) Will show the differences between database and migrations without applying it
 - migrate:clear
+
 Will clear the database using our custom migrations
 
 ## TODO
 [ ] Add support for multiple indexes
+
 [ ] Add diff command
+
 [x] Add support for removing fields that are not necessary anymore
+
 [x] Add sync functionality
+
 [x] Add support for indexes
+
 [x] Add support for foreign keys
+
 [x] Add analyze command

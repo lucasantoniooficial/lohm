@@ -3,6 +3,9 @@
 namespace Aposoftworks\LOHM\Classes\Helpers;
 
 //Classes
+use Aposoftworks\LOHM\Classes\Facades\LOHM;
+
+//Classes
 use Illuminate\Console\Command;
 use Aposoftworks\LOHM\Classes\Virtual\VirtualTable;
 use Aposoftworks\LOHM\Classes\Virtual\VirtualColumn;
@@ -14,28 +17,37 @@ class DatabaseHelper {
     // Diff methods
     //-------------------------------------------------
 
-    public static function diffDatabase (Command $command, VirtualDatabase $database) {
-        $tables = $database->tables();
+    public static function diffTable (Command $command, VirtualTable $table, string $prefix = "", $all = true) {
+        $fields         = $table->columns();
+        $exists         = LOHM::existsTable($table->name());
 
-        $command->line("<fg=cyan>DATABASE ".$database->name()."</>");
+        $command->line($prefix."<fg=".($exists? "default":"green").">TABLE ".$table->name()."</>");
 
-        for ($i = 0; $i < count($tables); $i++) {
-            DatabaseHelper::printTable($command, $tables[$i], "\t");
-        }
-    }
-
-    public static function diffTable (Command $command, VirtualTable $table, string $prefix = "") {
-        $fields = $table->columns();
-
-        $command->line($prefix."<fg=magenta>TABLE ".$table->name()."</>");
-
+        //Check new columns
         for ($i = 0; $i < count($fields); $i++) {
-            DatabaseHelper::printColumn($command, $fields[$i], $prefix."\t");
+            DatabaseHelper::diffColumn($command, $fields[$i], VirtualColumn::fromDatabase($table->database(), $table->name(), $fields[$i]->name()), $prefix."  ", $all);
+        }
+
+        //Check removed columns
+        $data_fields    = $table->dataColumns();
+        $deleted_fields = VirtualTable::fromDatabase($table->database(), $table->name())->columns();
+
+        for ($i = 0; $i < count($deleted_fields); $i++) {
+            if (!key_exists($deleted_fields[$i]->name(), $data_fields))
+                $command->line($prefix."  <fg=red>COLUMN ".$deleted_fields[$i]->toQuery()."</>");
         }
     }
 
-    public static function diffColumn (Command $command, VirtualColumn $column, string $prefix = "") {
-        $command->line($prefix."COLUMN ".$column->toQuery());
+    public static function diffColumn (Command $command, VirtualColumn $column_new, VirtualColumn $column_current, string $prefix = "", $all = true) {
+        if (!$column_current->isValid())
+            $command->line($prefix."<fg=green>COLUMN ".$column_new->toQuery()."</>");
+        else {
+            if (DatabaseHelper::columnEquals($column_new, $column_current)) {
+                if ($all) $command->line($prefix."<fg=default>COLUMN ".$column_new->toQuery()."</>");
+            }
+            else
+                $command->line($prefix."<fg=green>COLUMN ".$column_new->toQuery()."</>");
+        }
     }
 
     //-------------------------------------------------
@@ -45,30 +57,34 @@ class DatabaseHelper {
     public static function printDatabase (Command $command, VirtualDatabase $database) {
         $tables = $database->tables();
 
-        $command->line("<fg=cyan>DATABASE ".$database->name()."</>");
+        $command->line("<fg=cyan>DATABASE</> ".$database->name());
 
         for ($i = 0; $i < count($tables); $i++) {
-            DatabaseHelper::printTable($command, $tables[$i], "\t");
+            DatabaseHelper::printTable($command, $tables[$i], "  ");
         }
     }
 
     public static function printTable (Command $command, VirtualTable $table, string $prefix = "") {
         $fields = $table->columns();
 
-        $command->line($prefix."<fg=magenta>TABLE ".$table->name()."</>");
+        $command->line($prefix."<fg=magenta>TABLE</> ".$table->name());
 
         for ($i = 0; $i < count($fields); $i++) {
-            DatabaseHelper::printColumn($command, $fields[$i], $prefix."\t");
+            DatabaseHelper::printColumn($command, $fields[$i], $prefix."  ");
         }
     }
 
     public static function printColumn (Command $command, VirtualColumn $column, string $prefix = "") {
-        $command->line($prefix."COLUMN ".$column->toQuery());
+        $command->line($prefix."<fg=yellow>COLUMN</> ".$column->toQuery());
     }
 
     //-------------------------------------------------
     // Comparison methods
     //-------------------------------------------------
+
+    public static function columnEquals (VirtualColumn $obj1, VirtualColumn $obj2) {
+        return $obj1->toQuery() === $obj2->toQuery();
+    }
 
     public static function changesNeeded (VirtualTable $current, VirtualTable $needed) {
         $columns_current_data   = $current->dataColumns();

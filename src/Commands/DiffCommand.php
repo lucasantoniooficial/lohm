@@ -8,9 +8,11 @@ use Aposoftworks\LOHM\Classes\Helpers\DatabaseHelper;
 use Illuminate\Console\Command;
 
 //Classes
-use Aposoftworks\LOHM\Classes\Virtual\VirtualTable;
-use Aposoftworks\LOHM\Classes\Virtual\VirtualColumn;
-use Aposoftworks\LOHM\Classes\Virtual\VirtualDatabase;
+use Aposoftworks\LOHM\Classes\Facades\LOHM;
+
+//Helpers
+use Aposoftworks\LOHM\Classes\Helpers\NameBuilder;
+use Aposoftworks\LOHM\Classes\Helpers\DirectoryHelper;
 
 class DiffCommand extends Command {
     /**
@@ -18,7 +20,7 @@ class DiffCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'analyze:diff {database?} {table?} {column?}';
+    protected $signature = 'analyze:diff {--A|all}';
 
     /**
      * The console command description.
@@ -39,30 +41,27 @@ class DiffCommand extends Command {
     /**
      * Execute the console command.
      *
-     * @param  \App\DripEmailer  $drip
      * @return mixed
      */
     public function handle () {
         $this->line("");
 
-        //From default connection
-        if (is_null($this->argument("database")))
-            return DatabaseHelper::diffDatabase($this, VirtualDatabase::fromDatabase(config("database.connections.".config("database.default").".database")));
+        //Get all files
+        $allphpfiles = collect(DirectoryHelper::listFiles(config("lohm.default_table_directory")));
 
-        //Specified by user
-        if (is_null($this->argument("table")))
-            return DatabaseHelper::diffDatabase($this, VirtualDatabase::fromDatabase($this->argument("database")));
+        $allphpfiles->filter(function ($file) {
+            return NameBuilder::isMigration($file);
+        });
 
-        if (is_null($this->argument("column")))
-            return DatabaseHelper::diffTable($this, VirtualTable::fromDatabase($this->argument("database"), $this->argument("table")));
+        //Print the migrations
+        $allphpfiles->each(function ($file) {
+            LOHM::queue($file);
+        });
 
-        DatabaseHelper::diffColumn(
-            $this,
-            VirtualColumn::fromDatabase (
-                $this->argument("database"),
-                $this->argument("table"),
-                $this->argument("column")
-            )
-        );
+        $queues = LOHM::queues();
+
+        for ($i = 0; $i < count($queues); $i++) {
+            DatabaseHelper::diffTable($this, $queues[$i]["table"], "");
+        }
     }
 }

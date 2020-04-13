@@ -7,6 +7,8 @@ use RecursiveDirectoryIterator;
 
 class DirectoryHelper {
     public static function listFiles ($path) {
+        if (!is_dir($path)) return [];
+
         $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 
         $files = array();

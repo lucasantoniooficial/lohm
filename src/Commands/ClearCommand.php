@@ -40,7 +40,6 @@ class ClearCommand extends Command {
     /**
      * Execute the console command.
      *
-     * @param  \App\DripEmailer  $drip
      * @return mixed
      */
     public function handle() {

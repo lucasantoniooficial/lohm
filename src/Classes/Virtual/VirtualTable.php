@@ -49,6 +49,10 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
         return $this->tablename;
     }
 
+    public function database () {
+        return $this->databasename;
+    }
+
     public function columns () {
         return $this->_columns;
     }

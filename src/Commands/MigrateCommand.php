@@ -11,7 +11,6 @@ use Aposoftworks\LOHM\Classes\Facades\LOHM;
 //Helpers
 use Aposoftworks\LOHM\Classes\Helpers\NameBuilder;
 use Aposoftworks\LOHM\Classes\Helpers\DirectoryHelper;
-use Aposoftworks\LOHM\Classes\Helpers\QueryHelper;
 
 class MigrateCommand extends Command {
     protected $migrationscreate = 0;
@@ -43,7 +42,6 @@ class MigrateCommand extends Command {
     /**
      * Execute the console command.
      *
-     * @param  \App\DripEmailer  $drip
      * @return mixed
      */
     public function handle() {

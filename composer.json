@@ -23,5 +23,8 @@
             ]
         }
     },
-    "require": {}
+    "require-dev": {
+        "orchestra/testbench": "^3.7",
+        "phpunit/phpunit": "^7.5"
+    }
 }

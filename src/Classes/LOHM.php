@@ -15,8 +15,8 @@ class LOHM {
     protected $method;
     protected $connection;
 
-    protected $queues        = [];
-    protected $latequeues    = [];
+    protected $_queues        = [];
+    protected $_latequeues    = [];
 
     //-------------------------------------------------
     // Main methods
@@ -27,6 +27,18 @@ class LOHM {
     }
 
     //-------------------------------------------------
+    // Data methods
+    //-------------------------------------------------
+
+    public function queues () {
+        return $this->_queues;
+    }
+
+    public function latequeues () {
+        return $this->_latequeues;
+    }
+
+    //-------------------------------------------------
     // Create methods
     //-------------------------------------------------
 
@@ -34,15 +46,15 @@ class LOHM {
         $table = new ConcreteTable($name);
         $callback($table);
 
-        $this->enqueuer($table->toQuery(),      $table, "queues");
-        $this->enqueuer($table->toLateQuery(),  $table, "latequeues");
+        $this->enqueuer($table->toQuery(),      $table, "_queues");
+        $this->enqueuer($table->toLateQuery(),  $table, "_latequeues");
 
         //Reset connection after change
         $this->connection = config("database.default");
     }
 
     public function dropTable ($name) {
-        $this->latequeues[] = ["conn" => $this->connection, "query" => "DROP TABLE IF EXISTS ".$name, "type" => "alter"];
+        $this->_latequeues[] = ["conn" => $this->connection, "query" => "DROP TABLE IF EXISTS ".$name, "type" => "alter"];
     }
 
     public function conn ($name) {
@@ -54,7 +66,7 @@ class LOHM {
     public function existsTable ($name) {
         $exists = DB::connection($this->connection)->select(QueryHelper::checkTable($name));
 
-        return count($exists) >= 1;
+        return count($exists) === 1;
     }
 
     //-------------------------------------------------
@@ -81,13 +93,11 @@ class LOHM {
     }
 
     public function migrate () {
-        //dd($this->queues, $this->latequeues);
-
         //Merge the two queues and turn into a collection
         $queues = [];
 
-        for ($i = 0; $i < count($this->queues); $i++) {
-            $queue = $this->queues[$i];
+        for ($i = 0; $i < count($this->_queues); $i++) {
+            $queue = $this->_queues[$i];
 
             if (trim($queue["query"]) != "") {
                 $queues[] = function () use ($queue) {
@@ -96,8 +106,8 @@ class LOHM {
             }
         }
 
-        for ($i = 0; $i < count($this->latequeues); $i++) {
-            $queue = $this->latequeues[$i];
+        for ($i = 0; $i < count($this->_latequeues); $i++) {
+            $queue = $this->_latequeues[$i];
 
             if (trim($queue["query"]) != "") {
                 $queues[] = function () use ($queue) {
@@ -149,8 +159,8 @@ class LOHM {
         }
     }
 
-    private function enqueuer ($queue, $table, $queryType = "queues") {
-        $type = $queryType == "queues" ? "table":"alter";
+    private function enqueuer ($queue, $table, $queryType = "_queues") {
+        $type = $queryType == "_queues" ? "table":"alter";
 
         if (is_array($queue)) {
             for ($i = 0; $i < count($queue); $i++) {

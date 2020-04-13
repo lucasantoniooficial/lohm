@@ -7,9 +7,11 @@ use Illuminate\Support\ServiceProvider;
 
 //Commands
 use Aposoftworks\LOHM\Commands\NewCommand;
+use Aposoftworks\LOHM\Commands\DiffCommand;
 use Aposoftworks\LOHM\Commands\ClearCommand;
 use Aposoftworks\LOHM\Commands\MigrateCommand;
 use Aposoftworks\LOHM\Commands\AnalyzeCommand;
+use Aposoftworks\LOHM\Commands\CurrentCommand;
 
 class LohmServiceProvider extends ServiceProvider {
     public function register () {
@@ -36,6 +38,8 @@ class LohmServiceProvider extends ServiceProvider {
                 MigrateCommand::class,
                 ClearCommand::class,
                 AnalyzeCommand::class,
+                DiffCommand::class,
+                CurrentCommand::class,
             ]);
         }
     }
