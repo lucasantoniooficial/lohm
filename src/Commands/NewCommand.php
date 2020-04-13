@@ -17,7 +17,7 @@ class NewCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'make:table {classname : The name of the class to be created} {name? : The name of the table to be created}';
+    protected $signature = 'make:table {classname : The name of the class to be created} {name? : The name of the table to be created} {--T|template=default}';
 
     /**
      * The console command description.
@@ -41,7 +41,7 @@ class NewCommand extends Command {
      * @return mixed
      */
     public function handle() {
-        if (CreateNewTable::create($this->arguments(), $this->options())) {
+        if (CreateNewTable::create($this->arguments(), $this->options(), $this)) {
             $this->info("Table created successfully");
         }
         else {

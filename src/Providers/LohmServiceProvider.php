@@ -28,7 +28,7 @@ class LohmServiceProvider extends ServiceProvider {
         ], "lohm-config");
 
         $this->publishes([
-            __DIR__."/../Stubs/table.stub.php" => resource_path("stubs/lohm.php")
+            __DIR__."/../Stubs/lohm.default.php" => resource_path("stubs/lohm.default.php")
         ], "lohm-stub");
 
         //Commands
