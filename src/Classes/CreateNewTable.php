@@ -15,7 +15,7 @@ class CreateNewTable {
 
         //Create stub
         $stub = StubBuilder::build(file_get_contents(__DIR__."/../Stubs/table.stub.php"), [
-            "classname" => $filename,
+            "classname" => strtolower($filename),
             "tablename" => $name,
         ]);
 

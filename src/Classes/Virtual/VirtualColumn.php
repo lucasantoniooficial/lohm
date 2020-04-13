@@ -104,8 +104,17 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
     }
 
     public function buildType () {
-        if (isset($this->attributes->length))
-            return $this->attributes->type."(".$this->attributes->length.")".(isset($this->attributes->unsigned)? " UNSIGNED":"");
+        if (isset($this->attributes->length)) {
+            $length = $this->attributes->length;
+
+            //Check for enums
+            if (is_array($length)) {
+                $length = array_map(function ($value) { return "'".$value."'"; }, $length);
+                $length = implode (", ", $length);
+            }
+
+            return $this->attributes->type."(".$length.")".(isset($this->attributes->unsigned)? " UNSIGNED":"");
+        }
         else
             return $this->attributes->type;
     }
