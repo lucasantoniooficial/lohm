@@ -18,8 +18,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Aposoftworks\\LOHM\\Providers\\LohmServiceProvider",
-                "Aposoftworks\\LOHM\\Providers\\LohmCommandServiceProvider"
+                "Aposoftworks\\LOHM\\Providers\\LohmServiceProvider"
             ]
         }
     },
