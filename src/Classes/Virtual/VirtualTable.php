@@ -132,8 +132,8 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
         //Prepare columns
         $queryColumns = [];
 
-        for ($i = 0; $i < count($this->columns); $i++) {
-            $queryColumns[] = $this->columns[$i]->toQuery();
+        for ($i = 0; $i < count($this->_columns); $i++) {
+            $queryColumns[] = $this->_columns[$i]->toQuery();
         }
 
         //Prepare general statement
@@ -152,8 +152,8 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
         //Prepare columns
         $queryColumns = [];
 
-        for ($i = 0; $i < count($this->columns); $i++) {
-            $query = $this->columns[$i]->toLateQuery();
+        for ($i = 0; $i < count($this->_columns); $i++) {
+            $query = $this->_columns[$i]->toLateQuery();
 
             for ($x = 0; $x < count($query);$x++) {
                 if ($query[$x] !== "") $queryColumns[] = $query[$x];
@@ -167,8 +167,8 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
         //Get all columns as array
         $columns_as_arrays = [];
 
-        for ($i = 0; $i < count($this->columns); $i++) {
-            $columns_as_arrays[] = $this->columns[$i]->toArray();
+        for ($i = 0; $i < count($this->_columns); $i++) {
+            $columns_as_arrays[] = $this->_columns[$i]->toArray();
         }
 
         //All data response
