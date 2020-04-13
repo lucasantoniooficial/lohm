@@ -57,7 +57,7 @@ Will analyze the migrations data
 Will analyze the current database
 - analyze:diff {database?} {table?}
 
-(NYI) Will show the differences between database and migrations without applying it
+Will show the differences between database and migrations without applying it
 - migrate:clear
 
 Will clear the database using our custom migrations
@@ -65,7 +65,7 @@ Will clear the database using our custom migrations
 ## TODO
 [ ] Add support for multiple indexes
 
-[ ] Add diff command
+[x] Add diff command
 
 [x] Add support for removing fields that are not necessary anymore
 
