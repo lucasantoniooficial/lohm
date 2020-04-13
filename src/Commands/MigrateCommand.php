@@ -22,7 +22,7 @@ class MigrateCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'lohm:migrate {--C|check}';
+    protected $signature = 'migrate:sync';
 
     /**
      * The console command description.

@@ -1,6 +1,6 @@
 {
     "name": "aposoftworks/lohm",
-    "description": "Another approach to handle migrations inside laravel that helps you keep versionized and organized migrations.",
+    "description": "This packages overhaul laravel's migration with a table absolute state approach instead of a change state approach.",
     "type": "library",
     "license": "BSD-3-Clause",
     "authors": [

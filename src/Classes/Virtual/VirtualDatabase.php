@@ -25,7 +25,18 @@ class VirtualDatabase implements ToRawQuery, ComparableVirtual, Jsonable, Arraya
      *
      * @var \Aposoftworks\LOHM\Classes\Virtual\VirtualTable array
      */
-    protected $tables;
+    protected $_tables;
+
+    //-------------------------------------------------
+    // Data methods
+    //-------------------------------------------------
+
+    public function name () {
+        return $this->databasename;
+    }
+    public function tables () {
+        return $this->_tables;
+    }
 
     //-------------------------------------------------
     // Default methods
@@ -33,7 +44,7 @@ class VirtualDatabase implements ToRawQuery, ComparableVirtual, Jsonable, Arraya
 
     public function __construct ($databasename, $tables = [], $valid = true) {
         $this->databasename = $databasename;
-        $this->tables       = $tables;
+        $this->_tables      = $tables;
         $this->isvalid      = $valid;
     }
 
@@ -74,8 +85,8 @@ class VirtualDatabase implements ToRawQuery, ComparableVirtual, Jsonable, Arraya
         //Prepare columns
         $queryTables = [];
 
-        for ($i = 0; $i < count($this->tables); $i++) {
-            $queryTables[] = $this->tables[$i]->toQuery();
+        for ($i = 0; $i < count($this->_tables); $i++) {
+            $queryTables[] = $this->_tables[$i]->toQuery();
         }
 
         //Prepare general statement
@@ -95,8 +106,8 @@ class VirtualDatabase implements ToRawQuery, ComparableVirtual, Jsonable, Arraya
     public function toArray () {
         $tables_as_arrays = [];
 
-        for ($i = 0; $i < count($this->tables); $i++) {
-            $tables_as_arrays[] = $this->tables[$i]->toArray();
+        for ($i = 0; $i < count($this->_tables); $i++) {
+            $tables_as_arrays[] = $this->_tables[$i]->toArray();
         }
 
         //All data response

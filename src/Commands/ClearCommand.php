@@ -19,7 +19,7 @@ class ClearCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'lohm:clear';
+    protected $signature = 'migrate:clear';
 
     /**
      * The console command description.

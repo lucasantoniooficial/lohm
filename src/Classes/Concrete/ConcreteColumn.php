@@ -82,13 +82,18 @@ class ConcreteColumn extends VirtualColumn {
         return $this;
     }
 
-    public function on ($otherTable) {
+    public function on ($otherTable, $connection = null) {
+        if (is_null($connection)) {
+            $connection = config("database.default");
+        }
+
         if (!isset($this->attributes->foreign)) {
             $this->attributes->foreign          = [];
             $this->attributes->foreign["id"]    = "id";
         }
 
-        $this->attributes->foreign["table"] = $otherTable;
+        $this->attributes->foreign["table"]         = $otherTable;
+        $this->attributes->foreign["connection"]    = $connection;
 
         //Always return self for concatenation
         return $this;

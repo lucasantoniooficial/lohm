@@ -2,7 +2,14 @@
 
 namespace Aposoftworks\LOHM\Providers;
 
+//General
 use Illuminate\Support\ServiceProvider;
+
+//Commands
+use Aposoftworks\LOHM\Commands\NewCommand;
+use Aposoftworks\LOHM\Commands\ClearCommand;
+use Aposoftworks\LOHM\Commands\MigrateCommand;
+use Aposoftworks\LOHM\Commands\AnalyzeCommand;
 
 class LohmServiceProvider extends ServiceProvider {
     public function register () {
@@ -21,5 +28,15 @@ class LohmServiceProvider extends ServiceProvider {
         $this->publishes([
             __DIR__."/../config/lohm.php" => config_path("lohm")
         ], "config");
+
+        //Commands
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                NewCommand::class,
+                MigrateCommand::class,
+                ClearCommand::class,
+                AnalyzeCommand::class,
+            ]);
+        }
     }
 }

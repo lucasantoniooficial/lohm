@@ -158,7 +158,8 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
 
         //Foreign keys
         if (isset($this->attributes->foreign)) {
-            $name = $this->columnname."_".$this->tablename."_".$this->attributes->foreign["table"];
+            $name           = $this->columnname."_".$this->tablename."_".$this->attributes->foreign["table"];
+            $database_conn  = config("database.connections.".$this->attributes->foreign["connection"].".database");
 
             $prequery  = "ALTER TABLE ".$this->tablename;
             $prequery .= " ADD CONSTRAINT ".$name." FOREIGN KEY (".$this->columnname.") ";

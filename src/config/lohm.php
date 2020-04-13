@@ -12,7 +12,7 @@ return [
     |
     */
 
-    "default_table_directory" => base_path()."/database/migrations/",
+    "default_table_directory" => base_path()."/database/tables/",
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ return [
     |
     */
 
-    "cache_type" => "database",
+    "cache_type" => "none",
 
     /*
     |--------------------------------------------------------------------------
@@ -44,7 +44,7 @@ return [
     |
     */
 
-    "default_table_namestructure" => "Model_{studly}",
+    "default_table_namestructure" => "Table_{studly}",
 
     /*
     |--------------------------------------------------------------------------
