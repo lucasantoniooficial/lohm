@@ -2,19 +2,15 @@
 
 namespace Aposoftworks\LOHM\Classes;
 
-//Interfaces
-use Aposoftworks\LOHM\Contracts\FromCreateCommand;
-
 //Helpers
 use Aposoftworks\LOHM\Classes\Helpers\NameBuilder;
 use Aposoftworks\LOHM\Classes\Helpers\StubBuilder;
 
-class CreateNewTable implements FromCreateCommand {
+class CreateNewTable {
     public static function create ($arguments = [], $options = []) {
-        $asdir      = config("lohm.table_type") === "versionify";
         $name       = class_basename($arguments["name"]);
         $tablepath  = preg_replace("/".$name."/", "", $arguments["name"]);
-        $path       = base_path()."/database/migrations/".$tablepath;
+        $path       = config("lohm.default_table_directory").$tablepath;
         $filename   = NameBuilder::build($name);
 
         //Create stub
@@ -29,27 +25,11 @@ class CreateNewTable implements FromCreateCommand {
         }
 
         //Place stub inside migration
-        if ($asdir) {
-            //Create model dir
-            if (!is_dir($path."/".$name)) {
-                mkdir($path."/".$name);
-            }
-
-            //Place version
-            if (file_exists($path."/".$name."/".$filename.".php")) {
-                return false;
-            }
-            else {
-                file_put_contents($path."/".$name."/".$filename.".php", $stub);
-            }
+        if (file_exists($path.$filename.".php")) {
+            return false;
         }
         else {
-            if (file_exists($path.$filename.".php")) {
-                return false;
-            }
-            else {
-                file_put_contents($path.$filename.".php", $stub);
-            }
+            file_put_contents($path.$filename.".php", $stub);
         }
 
         //File created

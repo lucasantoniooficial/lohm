@@ -88,6 +88,10 @@ class VirtualDatabase implements ToRawQuery, ComparableVirtual, Jsonable, Arraya
         return $raw;
     }
 
+    public function toLateQuery () {
+
+    }
+
     public function toArray () {
         $tables_as_arrays = [];
 

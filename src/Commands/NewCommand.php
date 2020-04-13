@@ -17,14 +17,14 @@ class NewCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'lohm:new {type} {name? : The name (with the path or not) of the type to be created} {--u|unify} {--versiony}';
+    protected $signature = 'make:table {name : The name of the table to be created}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Creates a new table|version to be used inside of your migrations';
+    protected $description = 'Creates a new table to be used inside of your migrations';
 
     /**
      * Create a new command instance.
@@ -42,30 +42,11 @@ class NewCommand extends Command {
      * @return mixed
      */
     public function handle() {
-        $type = $this->argument("type");
-
-        $table = new ConcreteTable("test", [], "test");
-        $table->string("test_string")->default("testdefault");
-        $table->text("test_text");
-        $table->integer("test_integer");
-        $table->boolean("test_boolean");
-        $table->timestamps();
-
-        dd($table->toQuery());
-
-        switch ($type) {
-            case "table":
-                if (CreateNewTable::create($this->arguments(), $this->options())) {
-                    $this->info("Table created successfully");
-                }
-                else {
-                    $this->warn("Table already exists for this version");
-                }
-            break;
-            case "version":
-                CreateNewVersion::create($this->arguments(), $this->options());
-                $this->info("Version created successfully");
-            break;
+        if (CreateNewTable::create($this->arguments(), $this->options())) {
+            $this->info("Table created successfully");
+        }
+        else {
+            $this->warn("Table already exists");
         }
     }
 }

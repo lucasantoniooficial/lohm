@@ -16,7 +16,6 @@ class NameBuilder {
         $basicname  = $raw;
         $studlyname = Str::studly($raw);
         $camelname  = Str::camel($raw);
-        $version    = NameBuilder::formatversion();
 
         //Exchange timestamp
         if (preg_match("/{timestamp}/", $format)) {
@@ -34,10 +33,6 @@ class NameBuilder {
         if (preg_match("/{camel}/", $format)) {
             $format = preg_replace("/{camel}/", $camelname, $format);
         }
-        //Exchange version
-        if (preg_match("/{version}/", $format)) {
-            $format = preg_replace("/{version}/", $version, $format);
-        }
 
         return $format;
     }
@@ -48,11 +43,5 @@ class NameBuilder {
 
         return preg_match("/".$cleanformat."/", $name);
 
-    }
-
-    public static function formatversion () {
-        $version = config("lohm.initial_version");
-
-        return preg_replace("/\./", "_", $version);
     }
 }

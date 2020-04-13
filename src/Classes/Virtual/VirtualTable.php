@@ -39,7 +39,34 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
      *
      * @var \Aposoftworks\LOHM\Classes\Virtual\VirtualColumn array
      */
-    protected $columns;
+    protected $_columns;
+
+    //-------------------------------------------------
+    // Data methods
+    //-------------------------------------------------
+
+    public function name () {
+        return $this->tablename;
+    }
+
+    public function columns () {
+        return $this->_columns;
+    }
+
+    public function dataColumns () {
+        $response = [];
+
+        for ($i = 0; $i < count($this->_columns); $i++) {
+            $column = $this->_columns[$i];
+
+            $response[$column->name()] = [
+                "order"     => $i,
+                "column"    => $column,
+            ];
+        }
+
+        return $response;
+    }
 
     //-------------------------------------------------
     // Default methods
@@ -48,7 +75,7 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
     public function __construct ($tablename, $columns = [], $databasename = "", $valid = true) {
         $this->databasename = $databasename;
         $this->tablename    = $tablename;
-        $this->columns      = $columns;
+        $this->_columns     = $columns;
         $this->isvalid      = $valid;
     }
 
@@ -81,7 +108,9 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
             //Remove the name
             unset($columnattr->Field);
 
-            $virtualcolumns[] = new VirtualColumn($columnname, $columnattr, $databasename, $tablename);
+            $sanitizedattri = VirtualColumn::sanitize($columnattr);
+
+            $virtualcolumns[] = new VirtualColumn($columnname, $sanitizedattri, $databasename, $tablename);
         }
 
         return new VirtualTable($tablename, $virtualcolumns, $databasename);
@@ -117,6 +146,21 @@ class VirtualTable implements ToRawQuery, ComparableVirtual, Jsonable, Arrayable
         $raw = trim($raw);
 
         return $raw;
+    }
+
+    public function toLateQuery () {
+        //Prepare columns
+        $queryColumns = [];
+
+        for ($i = 0; $i < count($this->columns); $i++) {
+            $query = $this->columns[$i]->toLateQuery();
+
+            for ($x = 0; $x < count($query);$x++) {
+                if ($query[$x] !== "") $queryColumns[] = $query[$x];
+            }
+        }
+
+        return $queryColumns;
     }
 
     public function toArray() {

@@ -4,30 +4,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Starting version
+    | Migrations location
     |--------------------------------------------------------------------------
     |
-    | This is the initial version that will be added to the tables everytime
-    | you add a new one. Don't worry, you don't have to follow any standards
+    | You can change the place where LOHM tables will be stored, by default
+    | we place them in the migrations folder
     |
     */
 
-    "initial_version" => "0.1.0",
-
-    /*
-    |--------------------------------------------------------------------------
-    | Unification vs versioning
-    |--------------------------------------------------------------------------
-    |
-    | When creating a new table, this will decide if this is a only version
-    | migration or a versioned table. You can set this to unify if you don't
-    | care in keeping multiple versions of the tables you create.
-    |
-    | values: unify | versionify
-    |
-    */
-
-    "table_type" => "unify",
+    "default_table_directory" => base_path()."/database/migrations/",
 
     /*
     |--------------------------------------------------------------------------
@@ -37,24 +22,11 @@ return [
     | When creating our virtual database for keeping things balanced, we create
     | a cache that helps us fasten the process.
     |
-    | values: none, json, database
+    | values: none, json-cache, json-migration, database
     |
     */
 
-    "cache_type" => "json",
-
-    /*
-    |--------------------------------------------------------------------------
-    | Virtual Database class
-    |--------------------------------------------------------------------------
-    |
-    | This is the class responsible for converting database entries and
-    | migrations into a virtual json version that can be converted to a query
-    | or a json file. It must implement virtualConvertable.
-    |
-    */
-
-    "virtualdb_class" => \Aposoftworks\LOHM\Classes\Virtual\VirtualDatabase::class,
+    "cache_type" => "database",
 
     /*
     |--------------------------------------------------------------------------
@@ -69,18 +41,18 @@ return [
     | name          : {name}
     | studlyname    : {studly}
     | camelname     : {camel}
-    | version       : {version}
     |
     */
 
-    "default_table_namestructure" => "Model_{studly}_{version}",
+    "default_table_namestructure" => "Model_{studly}",
 
     /*
     |--------------------------------------------------------------------------
     | Default database values
     |--------------------------------------------------------------------------
     |
-    |
+    | Default values if you don't specify the length, beware that you need
+    | to respect your database limit!
     |
     */
 

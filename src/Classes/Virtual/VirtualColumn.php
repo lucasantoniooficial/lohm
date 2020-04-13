@@ -42,19 +42,16 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
     protected $attributes;
 
     //-------------------------------------------------
-    // Static methods
+    // Data methods
     //-------------------------------------------------
 
-    public static function key ($key) {
-        switch ($key) {
-            case "PRI":
-                return "PRIMARY KEY";
-            case "UNI":
-                return "";
-            default:
-                return "";
-        }
+    public function name () {
+        return $this->columnname;
     }
+
+    //-------------------------------------------------
+    // Static methods
+    //-------------------------------------------------
 
     public static function extra ($extra) {
         switch ($extra) {
@@ -63,6 +60,32 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
             default:
                 return "";
         }
+    }
+
+    public static function sanitize ($column) {
+        //Sort attributes
+        $_preattributes     = [];
+
+        //Type and size
+        $splittype              = explode(" ", $column->Type);
+        if (count($splittype) > 1) $_preattributes["unsigned"] = $splittype[1];
+        $splittype              = explode("(", $splittype[0]);
+        $_preattributes["type"] = $splittype[0];
+        if (count($splittype) > 1) $_preattributes["length"] = preg_replace("/(\(|\))/", "", $splittype[1]);
+
+        //Default value
+        $_preattributes["default"] = $column->Default;
+
+        //Key
+        $_preattributes["key"] = $column->Key;
+
+        //Nullable
+        $_preattributes["nullable"] = $column->Null === "NO" ? "NOT NULL":"NULL";
+
+        //Extra
+        $_preattributes["extra"] = VirtualColumn::extra($column->Extra);
+
+        return $_preattributes;
     }
 
     //-------------------------------------------------
@@ -82,7 +105,7 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
 
     public function buildType () {
         if (isset($this->attributes->length))
-            return $this->attributes->type."(".$this->attributes->length.")";
+            return $this->attributes->type."(".$this->attributes->length.")".(isset($this->attributes->unsigned)? " UNSIGNED":"");
         else
             return $this->attributes->type;
     }
@@ -100,25 +123,7 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
         //Unset the name since we already got that in a specific property
         unset($column->Field);
 
-        //Sort attributes
-        $_preattributes     = [];
-
-        //Type and size
-        $splittype              = explode("(", $column->Type);
-        $_preattributes["type"] = $splittype[0];
-        if (count($splittype) > 1) $_preattributes["length"] = preg_replace("/(\(|\))/", "", $splittype[1]);
-
-        //Default value
-        $_preattributes["default"] = $column->Default;
-
-        //Key
-        $_preattributes["key"] = VirtualColumn::key($column->Key);
-
-        //Nullable
-        $_preattributes["nullable"] = $column->Null === "NO" ? "NOT NULL":"NULL";
-
-        //Extra
-        $_preattributes["extra"] = VirtualColumn::extra($column->Extra);
+        $_preattributes = VirtualColumn::sanitize($column);
 
         return new VirtualColumn($columnname, $_preattributes, $databasename, $tablename);
     }
@@ -136,8 +141,8 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
         $name       = $this->columnname;
         $type       = $this->buildType();
         $increment  = isset($this->attributes->extra)? $this->attributes->extra:"";
-        $nullable   = isset($this->attributes->nullable)? $this->attributes->nullable:"NOT NULL";
-        $primary    = isset($this->attributes->key)? $this->attributes->key:"";
+        $nullable   = isset($this->attributes->nullable) && $this->attributes->nullable === true? $this->attributes->nullable:"NOT NULL";
+        $primary    = isset($this->attributes->key) && $this->attributes->key == "PRI"? "PRIMARY KEY":"";
         $default    = isset($this->attributes->default)? ("DEFAULT '".$this->attributes->default."'"):"";
 
         //Sanitization
@@ -146,6 +151,28 @@ class VirtualColumn implements ToRawQuery, ComparableVirtual, Jsonable, Arrayabl
         $raw = trim($raw);
 
         return $raw;
+    }
+
+    public function toLateQuery () {
+        $query = [];
+
+        //Foreign keys
+        if (isset($this->attributes->foreign)) {
+            $name = $this->columnname."_".$this->tablename."_".$this->attributes->foreign["table"];
+
+            $prequery  = "ALTER TABLE ".$this->tablename;
+            $prequery .= " ADD CONSTRAINT ".$name." FOREIGN KEY (".$this->columnname.") ";
+            $prequery .= "REFERENCES ".$this->attributes->foreign["table"]." (".$this->attributes->foreign["id"].")";
+            $prequery .= isset($this->attributes->foreign["method"]) ? $this->attributes->foreign["method"]:"";
+            $query[] = $prequery;
+        }
+
+        //Unique index
+        if (isset($this->attributes->key) && $this->attributes->key == "UNI")
+            $query[] = "CREATE INDEX ".$this->tablename."_".$this->columnname."in ON ".$this->tablename." (".$this->columnname.")";
+
+        //Return data
+        return $query;
     }
 
     public function toArray () {

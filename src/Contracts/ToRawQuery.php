@@ -9,4 +9,11 @@ interface ToRawQuery {
      * @return string
      */
     public function toQuery ();
+
+    /**
+     * Returns a raw DB string that can be used as a query string
+     *
+     * @return string
+     */
+    public function toLateQuery ();
 }
