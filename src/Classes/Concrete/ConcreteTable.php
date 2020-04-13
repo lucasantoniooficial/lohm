@@ -71,8 +71,14 @@ class ConcreteTable extends VirtualTable {
         return $column;
     }
 
-    public function sid ($name = "id") {
+    public function sid ($name = "sid") {
         $column             = new ConcreteColumn($name, ["type" => "varchar", "length" => 11, "key" => "PRI"], "", $this->tablename);
+        $this->_columns[]   = $column;
+        return $column;
+    }
+
+    public function uuid ($name = "uuid") {
+        $column             = new ConcreteColumn($name, ["type" => "varchar", "length" => 36, "key" => "PRI"], "", $this->tablename);
         $this->_columns[]   = $column;
         return $column;
     }
@@ -85,9 +91,5 @@ class ConcreteTable extends VirtualTable {
         $this->timestamp($createname);
         $this->timestamp($updatename)->nullable();
         $this->timestamp($deletename)->nullable();
-    }
-
-    public function userstamps ($createname = "id_user_created", $updatename = "id_user_updated", $deletename = "id_user_deleted") {
-
     }
 }

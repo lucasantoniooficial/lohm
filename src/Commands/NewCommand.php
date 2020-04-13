@@ -17,7 +17,7 @@ class NewCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'make:table {name : The name of the table to be created}';
+    protected $signature = 'make:table {classname : The name of the class to be created} {name? : The name of the table to be created}';
 
     /**
      * The console command description.

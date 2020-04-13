@@ -34,16 +34,22 @@ php artisan make:table Core\User
 ### Running migrations
 If you want to run the migrations, simply run `migrate:sync`, this will get the latest version of your migrations and run them. Since we keep in cache what is currently in the database, we compare the missing fields and make the changes accordingly. But beware that some operations can break the database, such as removing fields that are required for foreign keys, or adding values to foreign keys that don't match.
 
-## Configuration file
+## Publish files
 If you would like to change any configuration regarding the package, you can publish it using:
 ``` bash
 php artisan vendor:publish --tag=lohm-config
 ```
 You can see that everything is pretty much configurable, file/directory names, cache options, so you can keep it to your taste.
 
+You can also customize the stub used to create the migration using:
+``` bash
+php artisan vendor:publish --tag=lohm-stub
+```
+
+It will be placed inside resources/stubs/lohm.php
 ## Commands
 
-- make:table
+- make:table {classname} {name?}
 
 Creates a table migration
 - migrate:sync
@@ -52,7 +58,7 @@ Will compare the migrations with the database and apply the differences
 - analyze {database?} {table?} {column?}
 
 Will analyze the migrations data
-- analyze:current {database?} {table?} {column?}
+- analyze:current
 
 Will analyze the current database
 - analyze:diff {database?} {table?}

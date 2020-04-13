@@ -59,21 +59,23 @@ class ConcreteColumn extends VirtualColumn {
     // Foreign types
     //-------------------------------------------------
 
-    public function foreign () {
+    public function foreign ($otherTable = null) {
         if (!isset($this->attributes->foreign)) {
-            $this->attributes->foreign          = [];
-            $this->attributes->foreign["id"]    = "id";
-            $this->attributes->foreign["table"] = $this->tablename;
+            $this->attributes->foreign                  = [];
+            $this->attributes->foreign["id"]            = "id";
+            $this->attributes->foreign["table"]         = is_null($otherTable) ? $this->tablename:$otherTable;
+            $this->attributes->foreign["connection"]    = config("database.default");
         }
 
         //Always return self for concatenation
         return $this;
     }
 
-    public function references ($idOfOtherTable) {
+    public function references ($idOfOtherTable = "id") {
         if (!isset($this->attributes->foreign)) {
-            $this->attributes->foreign          = [];
-            $this->attributes->foreign["table"] = $this->tablename;
+            $this->attributes->foreign                  = [];
+            $this->attributes->foreign["table"]         = $this->tablename;
+            $this->attributes->foreign["connection"]    = config("database.default");
         }
 
         $this->attributes->foreign["id"]    = $idOfOtherTable;
@@ -99,11 +101,12 @@ class ConcreteColumn extends VirtualColumn {
         return $this;
     }
 
-    public function onDelete($method) {
+    public function onDelete($method = "CASCADE") {
         if (!isset($this->attributes->foreign)) {
-            $this->attributes->foreign          = [];
-            $this->attributes->foreign["id"]    = "id";
-            $this->attributes->foreign["table"] = $this->tablename;
+            $this->attributes->foreign                  = [];
+            $this->attributes->foreign["id"]            = "id";
+            $this->attributes->foreign["table"]         = $this->tablename;
+            $this->attributes->foreign["connection"]    = config("database.default");
         }
 
         $this->attributes->foreign["method"] = " ON DELETE ".$method;
@@ -112,11 +115,12 @@ class ConcreteColumn extends VirtualColumn {
         return $this;
     }
 
-    public function onUpdate($method) {
+    public function onUpdate($method = "CASCADE") {
         if (!isset($this->attributes->foreign)) {
-            $this->attributes->foreign          = [];
-            $this->attributes->foreign["id"]    = "id";
-            $this->attributes->foreign["table"] = $this->tablename;
+            $this->attributes->foreign                  = [];
+            $this->attributes->foreign["id"]            = "id";
+            $this->attributes->foreign["table"]         = $this->tablename;
+            $this->attributes->foreign["connection"]    = config("database.default");
         }
 
         $this->attributes->foreign["method"] = " ON UPDATE ".$method;
