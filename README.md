@@ -49,7 +49,7 @@ php artisan vendor:publish --tag=lohm-stub
 It will be placed inside resources/stubs/lohm.php
 ## Commands
 
-- make:table {classname} {name?}
+- make:table {classname} {name?} {--T|template=default}
 
 Creates a table migration
 - migrate:sync
@@ -67,6 +67,9 @@ Will show the differences between database and migrations without applying it
 - migrate:clear
 
 Will clear the database using our custom migrations
+
+## Custom stubs
+With LOHM you can write custom migrations to use as templates when creating new ones, after publishing the default one (using: `php artisan vendor:publish --tag=lohm-stub`), you change "default" with the name you want to use and you are good to go. For example, you can use `php artisan make:table User --template=user` to use the `lohm.user.php` stub.
 
 ## TODO
 [ ] Add support for multiple indexes
