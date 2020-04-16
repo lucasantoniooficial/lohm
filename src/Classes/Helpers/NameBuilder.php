@@ -12,7 +12,7 @@ class NameBuilder {
         $format = config("lohm.default_table_namestructure");
 
         //Helpers
-        $timestamp  = Carbon::now();
+        $timestamp  = Carbon::now()->format('Y-m-d').'_'.time();
         $basicname  = $raw;
         $studlyname = Str::studly($raw);
         $camelname  = Str::camel($raw);
